@@ -1,0 +1,26 @@
+CREATE DATABASE tienda_steam
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE tienda_steam;
+
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  correo VARCHAR(150) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  rol ENUM('admin','cliente') NOT NULL DEFAULT 'cliente',
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE productos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL,
+  descripcion TEXT,
+  precio DECIMAL(10,2) NOT NULL,
+  imagen VARCHAR(255) DEFAULT NULL,
+  stock INT NOT NULL DEFAULT 0,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_por INT NULL,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (creado_por) REFERENCES usuarios(id)
+);
