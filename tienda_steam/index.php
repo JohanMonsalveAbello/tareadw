@@ -15,3 +15,4 @@
     <a href='registro.php'>Registrar</a>
 </body>
 </html>
+<?php include "./includes/pie.php" ?>

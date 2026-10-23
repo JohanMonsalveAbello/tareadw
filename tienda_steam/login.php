@@ -7,9 +7,15 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
+<?php
+include "./config/conexion.php";
+include "./includes/funciones.php";
+
+Login( $conn);
+?>
 <body>
     <h1 class="titulo1">Inicie sesión</h1>
-    <form action="" method="post">
+    <form action="login.php" method="post">
         <label for="">Usuario</label><br>
         <input type="text" name="usuariol" id="usuariol" required><br>
         <label for="">Contraseña</label><br>
@@ -18,5 +24,8 @@
     </form>
 
     <a href="index.php">Regresar</a>
+
+    <?php include "./includes/pie.php" ?>
+
 </body>
 </html>
