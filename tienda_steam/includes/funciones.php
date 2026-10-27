@@ -1,5 +1,4 @@
 <?php
-//Funcion iniciar sesión
 session_start();
 require "config/conexion.php";
 
@@ -26,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $error = "Correo o contraseña incorrectos.";
 }
 
-// Registrar
 function RegistrarUsuarioV($conn){
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST["nombre"];
@@ -52,12 +50,10 @@ function RegistrarUsuarioAd($conn){
 }
 
 function Login($conn) {
-    // Comprobar si se envió el formulario
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $correo = $_POST["usuariol"]; // O el nombre que uses en el input
+        $correo = $_POST["usuariol"];
         $password = $_POST["contral"];
 
-        // Buscar al usuario por su correo en la base de datos usando sentencia preparada
         $stmt = $conn->prepare("SELECT id, nombre, correo, password_hash, rol, activo FROM usuarios WHERE correo = ?");
         $stmt->bind_param("s", $correo);
         $stmt->execute();
@@ -66,11 +62,8 @@ function Login($conn) {
         if ($resultado->num_rows === 1) {
             $usuario = $resultado->fetch_assoc();
 
-            // Verificar si el usuario está activo
             if ($usuario['activo'] == 1) {
-                // Verificar la contraseña escrita con el hash de la base de datos
                 if (password_verify($password, $usuario['password_hash'])) {
-                    // Iniciar sesión exitosamente (puedes usar sesiones de PHP)
                     session_start();
                     $_SESSION['id'] = $usuario['id'];
                     $_SESSION['nombre'] = $usuario['nombre'];
