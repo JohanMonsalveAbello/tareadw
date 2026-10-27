@@ -76,8 +76,8 @@ function Login($conn) {
                     $_SESSION['nombre'] = $usuario['nombre'];
                     $_SESSION['rol'] = $usuario['rol'];
 
-                    // Redireccionar según el rol o a una página principal
-                    header("Location: ./tienda_steam/admin/panel.php");
+                    
+                    header("Location: ./catalogo.html");
                     exit();
                 } else {
                     echo "<p style='color:red;'>Contraseña incorrecta.</p>";
@@ -92,5 +92,11 @@ function Login($conn) {
         $stmt->close();
     }
 }
-?>
 
+function CerrarSesion() {
+    $_SESSION = [];
+    session_destroy();
+    header("Location: login.php");
+    exit();
+}
+?>

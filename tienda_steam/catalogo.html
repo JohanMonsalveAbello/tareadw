@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catálogo de productos</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <h1>Catálogo de productos</h1>
+    <br>
+
+    <div>
+        <label for="searchId"><p>Buscar por ID del producto:</p></label>
+        <input type="text" id="searchId" name="searchId">
+        <button onclick="searchById()">Buscar</button>
+    </div>
+    <p><a href="cerrar_sesion.php">Cerrar sesión</a></p>
+<br>
+<br>
+    <table id="productsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody id="productsTableBody">
+            <!-- Aquí se insertarán los datos de los productos -->
+        </tbody>
+    </table>
+
+    <script>
+        function fetchProducts() {
+            return fetch('catalogo.php').then(response => {
+                if (response.status === 401) {
+                    window.location.href = 'login.php';
+                    return null;
+                }
+                if (!response.ok) {
+                    throw new Error('No se pudieron cargar los productos.');
+                }
+                return response.json();
+            });
+        }
+
+        function addProductRow(tableBody, producto) {
+            const row = document.createElement('tr');
+            [producto.id, producto.nombre, producto.descripcion, producto.precio].forEach(valor => {
+                const cell = document.createElement('td');
+                cell.textContent = valor ?? '';
+                row.appendChild(cell);
+            });
+
+            const imageCell = document.createElement('td');
+            if (producto.imagen) {
+                try {
+                    const imageUrl = new URL(producto.imagen);
+                    if (imageUrl.protocol === 'https:' || imageUrl.protocol === 'http:') {
+                        const image = document.createElement('img');
+                        image.className = 'product-image';
+                        image.src = imageUrl.href;
+                        image.alt = producto.nombre ? `Imagen de ${producto.nombre}` : 'Imagen del producto';
+                        image.loading = 'lazy';
+                        imageCell.appendChild(image);
+                    }
+                } catch (error) {
+                    console.error('URL de imagen no válida:', producto.imagen);
+                }
+            }
+            row.appendChild(imageCell);
+
+            const stockCell = document.createElement('td');
+            stockCell.textContent = producto.stock ?? '';
+            row.appendChild(stockCell);
+            tableBody.appendChild(row);
+        }
+
+        function searchById() {
+            const searchValue = document.getElementById('searchId').value;
+
+            fetchProducts()
+                .then(data => {
+                    if (!data) return;
+                    const productsTableBody = document.getElementById('productsTableBody');
+                    productsTableBody.innerHTML = '';
+
+                    data.forEach(producto => {
+                        if (String(producto.id) === searchValue.trim()) {
+                            addProductRow(productsTableBody, producto);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        
+        fetchProducts()
+            .then(data => {
+                if (!data) return;
+                const productsTableBody = document.getElementById('productsTableBody');
+
+                data.forEach(producto => {
+                    addProductRow(productsTableBody, producto);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>

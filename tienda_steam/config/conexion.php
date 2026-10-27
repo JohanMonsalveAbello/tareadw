@@ -2,7 +2,7 @@
 // config/conexion.php
 $servidor = "localhost";
 $usuario = "root";
-$clave = ""; // configuración local habitual de XAMPP; cámbiala si tu instalación usa otra
+$clave = ""; 
 $base_datos = "tienda_steam";
 
 $conn = mysqli_connect($servidor, $usuario, $clave, $base_datos);
